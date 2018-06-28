@@ -1,0 +1,26 @@
+version: '3'
+services:
+  proxy:
+    container_name: nginx_proxy
+    build: ./nginx
+    ports:
+      - "8080:80"
+    networks:
+      - front-tier
+    depends_on:
+      - tf_server
+    links:
+      - tf_server
+  tf_server:
+    container_name: server1
+    build: ./django
+    networks:
+      - front-tier
+
+ 
+
+networks:
+  front-tier:
+    driver: bridge
+#  back-tier:
+#    driver: bridge
