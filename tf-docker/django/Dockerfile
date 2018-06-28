@@ -1,7 +1,7 @@
 FROM tensorflow/tensorflow:1.8.0-py3
 
 ADD ./conf/sources.list /etc/apt/sources.list
-ADD ./conf/pip.conf ~/.pip/pip.conf
+ADD ./conf/pip.conf /root/.pip/pip.conf
 RUN apt update -y
 RUN apt upgrade -y
 RUN apt install -y python3-pip \
@@ -17,9 +17,12 @@ RUN ls
 RUN python3 manage.py collectstatic
 
 ADD ./conf/django.conf /etc/nginx/sites-enabled/django.conf
+RUN cat /etc/nginx/sites-enabled/django.conf
+#RUN service nginx restart
+
 ADD ./conf/django_uwsgi.ini /home/
 
 WORKDIR /home/
-RUN uwsgi --ini django_uwsgi.ini	
+RUN nohup uwsgi --ini django_uwsgi.ini &
 
-CMD ["service", "nginx", "restart"]
+CMD ["nginx", "-g", "daemon off"]
