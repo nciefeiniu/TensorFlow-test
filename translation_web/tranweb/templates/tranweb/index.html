@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zg-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Ts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{%  static 'tranweb/css/bootstrap.min.css' %}">
+
+</head>
+<body style="padding-top: 70px;">
+    <div class="container-fluid">
+      <!-- Navigation -->
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <p class="navbar-text">TF</p>
+          <p class="navbar-text navbar-right">Power by TensorFlow</p>
+        </div>
+      </nav>
+
+      <!-- choice button -->
+        <!-- Large button group -->
+      <form class="form-inline" id="trdata">
+          {% csrf_token %}
+          <div class="container">
+            <select class="form-control" name="languagesotring" style=" margin-left: 5%">
+              <option>Chinese</option>
+              <option>German</option>
+            </select>
+          </div>
+
+          <div class="container" style="margin-top: 30px;">
+            <!--inputs box -->
+            <div style="float: left; width: 50%">
+              <div class="container">
+                <textarea class="form-control" name="input_text" rows="6" style="width: 50%"></textarea>
+              </div>
+            </div>
+            <div style="float: left; width: 50%">
+              <!--outputs box -->
+              <div class="container">
+                <textarea class="form-control" id="output_text" disabled="true" rows="6" style="width: 50%;"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="container" style="margin-top: 20px">
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="button" onclick="login()" class="btn btn-default">transilation</button>
+                </div>
+              </div>
+          </div>
+
+          </form>
+      <!-- botton-->
+      <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+          <p class="navbar-text">&copy copyright 2018 TF小组</p>
+        </div>
+      </nav>
+
+    </div>
+    <!-- js -->
+    <script src="{% static 'tranweb/js/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static 'tranweb/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript">
+        function login() {
+            $.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/tranweb/tran/" ,//url
+                data: $('#trdata').serialize(),
+                success: function (result) {
+                    {#console.log(result);#}
+                    document.getElementById("output_text").value = decodeURI(result.response);
+                }
+            });
+            return false;
+        }
+    </script>
+</body>
+</html>
