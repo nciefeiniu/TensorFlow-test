@@ -1,26 +1,27 @@
 version: '3'
 services:
+
+  server1:
+    container_name: server1
+    build: ./django
+    command: uwsgi --ini django_uwsgi.ini
+    expose:
+      - "8000"
+    networks: 
+      - default
+    tty: true
   proxy:
     container_name: nginx_proxy
     build: ./nginx
+    command: service nginx start
     ports:
       - "8080:80"
-    networks:
-      - front-tier
     depends_on:
-      - tf_server
-    links:
-      - tf_server
-  tf_server:
-    container_name: server1
-    build: ./django
-    networks:
-      - front-tier
-
- 
+      - server1
+    networks: 
+      - default
+    tty: true
 
 networks:
-  front-tier:
-    driver: bridge
-#  back-tier:
-#    driver: bridge
+  default:
+     driver: bridge 
